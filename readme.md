@@ -44,7 +44,7 @@ You can also build your own environment:
 1) we use anaconda to simplify the package installations, you can download anaconda (4.9.2) here: [https://www.anaconda.com/products/individual](https://www.anaconda.com/products/individual)
 2) you can create your conda env by doing 
 ```
-conda create --name <YourEnvName> --file requirements.txt
+conda env create -n <env_name> -f environment.yaml
 ```
 3) TransCenter uses Deformable transformer from Deformable DETR. Therefore, we need to install deformable attention modules:
 ```
