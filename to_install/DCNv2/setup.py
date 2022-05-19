@@ -1,6 +1,6 @@
-## TransCenter: Transformers with Dense Queries for Multiple-Object Tracking
+## TransCenter: Transformers with Dense Representations for Multiple-Object Tracking
 ## Copyright Inria
-## Year 2021
+## Year 2022
 ## Contact : yihong.xu@inria.fr
 ##
 ## TransCenter is free software: you can redistribute it and/or modify
@@ -22,12 +22,11 @@
 ## (2) 2020 Philipp Bergmann, Tim Meinhardt. (GNU General Public License v3.0 Licence: https://github.com/phil-bergmann/tracking_wo_bnw)
 ## (3) 2020 Facebook. (Apache License Version 2.0: https://github.com/facebookresearch/detr/)
 ## (4) 2020 Xingyi Zhou.(MIT License: https://github.com/xingyizhou/CenterTrack)
+## (5) 2021 Wenhai Wang. (Apache License Version 2.0: https://github.com/whai362/PVT/blob/v2/LICENSE)
 ##
 ## TransCenter uses packages from
 ## (1) 2019 Charles Shang. (BSD 3-Clause Licence: https://github.com/CharlesShang/DCNv2)
-## (2) 2017 NVIDIA CORPORATION. (Apache License, Version 2.0: https://github.com/NVIDIA/flownet2-pytorch/tree/master/networks/correlation_package)
-## (3) 2019 Simon Niklaus. (GNU General Public License v3.0: https://github.com/sniklaus/pytorch-liteflownet)
-## (4) 2018 Tak-Wai Hui. (Copyright (c), see details in the LICENSE file: https://github.com/twhui/LiteFlowNet)
+## (2) 2020 fundamentalvision.(Apache License 2.0: https://github.com/fundamentalvision/Deformable-DETR)
 #!/usr/bin/env python
 
 import os
@@ -47,7 +46,7 @@ requirements = ["torch", "torchvision"]
 
 def get_extensions():
     this_dir = os.path.dirname(os.path.abspath(__file__))
-    extensions_dir = os.path.join(this_dir, "src")
+    extensions_dir = os.path.join(this_dir, "DCN", "src")
 
     main_file = glob.glob(os.path.join(extensions_dir, "*.cpp"))
     source_cpu = glob.glob(os.path.join(extensions_dir, "cpu", "*.cpp"))

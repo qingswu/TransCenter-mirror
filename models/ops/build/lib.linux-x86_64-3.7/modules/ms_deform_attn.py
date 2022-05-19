@@ -119,10 +119,8 @@ class MSDeformAttn(nn.Module):
         N, Len_q, _ = query.shape
         N, Len_in, _ = input_flatten.shape
         assert (input_spatial_shapes[:, 0] * input_spatial_shapes[:, 1]).sum() == Len_in
-        # self.with_pos_embed(src, pos), reference_points, src, spatial_shapes, level_start_index, padding_mask
+
         value = self.value_proj(input_flatten)
-        # print("value shape", value.shape)
-        "value shape torch.Size([20, 33345, 256])"
         if input_padding_mask is not None:
             value = value.masked_fill(input_padding_mask[..., None], float(0))
         value = value.view(N, Len_in, self.n_heads, self.d_model // self.n_heads)
@@ -131,18 +129,9 @@ class MSDeformAttn(nn.Module):
         attention_weights = F.softmax(attention_weights, -1).view(N, Len_q, self.n_heads, self.n_levels, self.n_points)
         # N, Len_q, n_heads, n_levels, n_points, 2
         if reference_points.shape[-1] == 2:
-            "encoder reference_points.shape torch.Size([20, 33345, 4, 2])"
             offset_normalizer = torch.stack([input_spatial_shapes[..., 1], input_spatial_shapes[..., 0]], -1)
             sampling_locations = reference_points[:, :, None, :, None, :] \
                                  + sampling_offsets / offset_normalizer[None, None, None, :, None, :]
-            # print("sampling_locations", sampling_locations.shape)
-            # print("offset_normalizer", offset_normalizer.shape)
-            # print("reference_points", reference_points.shape)
-            """
-                sampling_locations torch.Size([20, 33345, 8, 4, 4, 2])
-                offset_normalizer torch.Size([4, 2])
-                reference_points torch.Size([20, 33345, 4, 2])
-            """
         elif reference_points.shape[-1] == 4:
             sampling_locations = reference_points[:, :, None, :, None, :2] \
                                  + sampling_offsets / self.n_points * reference_points[:, :, None, :, None, 2:] * 0.5
@@ -150,6 +139,6 @@ class MSDeformAttn(nn.Module):
             raise ValueError(
                 'Last dim of reference_points must be 2 or 4, but get {} instead.'.format(reference_points.shape[-1]))
         output = MSDeformAttnFunction.apply(
-            value, input_spatial_shapes, input_level_start_index, sampling_locations.float(), attention_weights.float(), self.im2col_step)
+            value, input_spatial_shapes, input_level_start_index, sampling_locations, attention_weights, self.im2col_step)
         output = self.output_proj(output)
         return output
