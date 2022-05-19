@@ -5,7 +5,7 @@
 **[[Paper](https://arxiv.org/abs/2103.15145)]** **[[Project](https://team.inria.fr/robotlearn/transcenter-transformers-with-dense-queriesfor-multiple-object-tracking/)]**<br />
 
 <div align="center">
-  <img src="https://github.com/yihongXU/TransCenter/raw/main/pipelineV2.png" width="1200px" />
+  <img src="https://github.com/yihongXU/TransCenter/raw/oldTransCenter/pipelineV2.png" width="1200px" />
 </div>
 
 ## Bibtex
