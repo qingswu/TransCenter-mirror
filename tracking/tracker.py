@@ -1,32 +1,3 @@
-## TransCenter: Transformers with Dense Representations for Multiple-Object Tracking
-## Copyright Inria
-## Year 2022
-## Contact : yihong.xu@inria.fr
-##
-## TransCenter is free software: you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation, either version 3 of the License, or
-## (at your option) any later version.
-
-## TransCenter is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with this program, TransCenter.  If not, see <http://www.gnu.org/licenses/> and the LICENSE file.
-##
-##
-## TransCenter has code derived from
-## (1) 2020 fundamentalvision.(Apache License 2.0: https://github.com/fundamentalvision/Deformable-DETR)
-## (2) 2020 Philipp Bergmann, Tim Meinhardt. (GNU General Public License v3.0 Licence: https://github.com/phil-bergmann/tracking_wo_bnw)
-## (3) 2020 Facebook. (Apache License Version 2.0: https://github.com/facebookresearch/detr/)
-## (4) 2020 Xingyi Zhou.(MIT License: https://github.com/xingyizhou/CenterTrack)
-## (5) 2021 Wenhai Wang. (Apache License Version 2.0: https://github.com/whai362/PVT/blob/v2/LICENSE)
-##
-## TransCenter uses packages from
-## (1) 2019 Charles Shang. (BSD 3-Clause Licence: https://github.com/CharlesShang/DCNv2)
-## (2) 2020 fundamentalvision.(Apache License 2.0: https://github.com/fundamentalvision/Deformable-DETR)
 import copy
 import sys
 import os
@@ -468,17 +439,17 @@ class Tracker:
         if self.pre_sample is None:
             self.pre_sample = self.sample
 
-        # plot #
-        img_pil = Image.fromarray((255*blob['img'])[0].permute(1, 2, 0).cpu().numpy().astype(np.uint8), 'RGB')
-        img_draw = ImageDraw.Draw(img_pil)
-        #
-        if self.last_image is not None:
-            pre_img_pil = Image.fromarray((255 * self.last_image)[0].permute(1, 2, 0).cpu().numpy().astype(np.uint8), 'RGB')
-            pre_img_draw = ImageDraw.Draw(pre_img_pil)
-        else:
-            pre_img_pil = img_pil
-            pre_img_draw = img_draw
-        # # # plot #
+        # # plot #
+        # img_pil = Image.fromarray((255*blob['img'])[0].permute(1, 2, 0).cpu().numpy().astype(np.uint8), 'RGB')
+        # img_draw = ImageDraw.Draw(img_pil)
+        # #
+        # if self.last_image is not None:
+        #     pre_img_pil = Image.fromarray((255 * self.last_image)[0].permute(1, 2, 0).cpu().numpy().astype(np.uint8), 'RGB')
+        #     pre_img_draw = ImageDraw.Draw(pre_img_pil)
+        # else:
+        #     pre_img_pil = img_pil
+        #     pre_img_draw = img_draw
+        # # # # plot #
 
         ###########################
         # Look for new detections #
@@ -570,24 +541,24 @@ class Tracker:
                 self.results[t.id] = {}
             self.results[t.id][self.im_index] = np.concatenate([t.pos[0].cpu().numpy(), np.array([t.score.cpu()])])
 
-            # # # plot tracks
-            bb = t.pos[0].clone()
-            bb = np.array(bb.cpu(), dtype=int)
-            img_draw.rectangle([(bb[0], bb[1]), (bb[2], bb[3])], fill=None, outline="red")
-            img_draw.text((bb[0], (bb[1] + bb[3]) // 2), f" {t.id}", fill=(255, 0, 0, 255),
-                          font=ImageFont.truetype("/scratch/scorpio/yixu/UbuntuMono-BI.ttf", 25))
-
-            img_draw.text((bb[0], bb[3]), f" {t.score.item():.02f}", fill=(0, 255, 0, 255),
-                          font=ImageFont.truetype("/scratch/scorpio/yixu/UbuntuMono-BI.ttf", 20))
-            # #
-        # # save plot #
-        os.makedirs(
-            "/scratch2/scorpio/yixu/transcenterTracking_efficient/sparse_decoder_tracking/check_plot/" + blob['video_name'],
-            exist_ok=True)
-        img_pil.save(
-            "/scratch2/scorpio/yixu/transcenterTracking_efficient/sparse_decoder_tracking/check_plot/" + blob['video_name'] + f'/' + blob['frame_name'])
-
+        #     # # # plot tracks
+        #     bb = t.pos[0].clone()
+        #     bb = np.array(bb.cpu(), dtype=int)
+        #     img_draw.rectangle([(bb[0], bb[1]), (bb[2], bb[3])], fill=None, outline="red")
+        #     img_draw.text((bb[0], (bb[1] + bb[3]) // 2), f" {t.id}", fill=(255, 0, 0, 255),
+        #                   font=ImageFont.truetype("./UbuntuMono-BI.ttf", 25))
+        # 
+        #     img_draw.text((bb[0], bb[3]), f" {t.score.item():.02f}", fill=(0, 255, 0, 255),
+        #                   font=ImageFont.truetype("./UbuntuMono-BI.ttf", 20))
+        #     # #
         # # # save plot #
+        # os.makedirs(
+        #     "./check_plot/" + blob['video_name'],
+        #     exist_ok=True)
+        # img_pil.save(
+        #     "./check_plot/" + blob['video_name'] + f'/' + blob['frame_name'])
+        # 
+        # # # # save plot #
         new_inactive_tracks = []
         for t in self.inactive_tracks:
             t.count_inactive += 1
