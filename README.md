@@ -13,7 +13,7 @@
 **If you find this code useful, please star the project and consider citing:** <br />
 ```
 @misc{xu2021transcenter,
-      title={TransCenter: Transformers with Dense Queries for Multiple-Object Tracking}, 
+      title={TransCenter: Transformers with Dense Representations for Multiple-Object Tracking}, 
       author={Yihong Xu and Yutong Ban and Guillaume Delorme and Chuang Gan and Daniela Rus and Xavier Alameda-Pineda},
       year={2021},
       eprint={2103.15145},
