@@ -1,4 +1,4 @@
-cd /scratch2/scorpio/yixu/remove_reid/public_code/TransCenter
+cd TransCenter_official
 
 train whole coco person:
 python -m torch.distributed.launch --nproc_per_node=4 --use_env ./training/main_coco.py --output_dir=./outputs/whole_coco --batch_size=4 --num_workers=8 --pre_hm --tracking --nheads 1 2 5 8 --num_encoder_layers 3 4 6 3 --dim_feedforward_ratio 8 8 4 4 --d_model 64 128 320 512 --data_dir=YourPathTo/cocodataset/
