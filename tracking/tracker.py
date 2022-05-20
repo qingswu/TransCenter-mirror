@@ -547,7 +547,7 @@ class Tracker:
         #     img_draw.rectangle([(bb[0], bb[1]), (bb[2], bb[3])], fill=None, outline="red")
         #     img_draw.text((bb[0], (bb[1] + bb[3]) // 2), f" {t.id}", fill=(255, 0, 0, 255),
         #                   font=ImageFont.truetype("./UbuntuMono-BI.ttf", 25))
-        # 
+        #
         #     img_draw.text((bb[0], bb[3]), f" {t.score.item():.02f}", fill=(0, 255, 0, 255),
         #                   font=ImageFont.truetype("./UbuntuMono-BI.ttf", 20))
         #     # #
@@ -557,7 +557,7 @@ class Tracker:
         #     exist_ok=True)
         # img_pil.save(
         #     "./check_plot/" + blob['video_name'] + f'/' + blob['frame_name'])
-        # 
+        #
         # # # # save plot #
         new_inactive_tracks = []
         for t in self.inactive_tracks:

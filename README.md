@@ -1,5 +1,5 @@
 ## TransCenter V2: Transformers with Dense Representations for Multiple-Object Tracking <br />
-## An update towards a more efficient and powerful TransCenter ##
+## An update towards a more efficient and powerful TransCenter, TransCenter-Lite. ##
 
 **TransCenter: Transformers with Dense Representations for Multiple-Object Tracking** <br />
 [Yihong Xu](https://team.inria.fr/robotlearn/team-members/yihong-xu/), [Yutong Ban](https://team.inria.fr/perception/team-members/yutong-ban/), [Guillaume Delorme](https://team.inria.fr/robotlearn/team-members/guillaume-delorme/), [Chuang Gan](https://people.csail.mit.edu/ganchuang/), [Daniela Rus](http://danielarus.csail.mit.edu/), [Xavier Alameda-Pineda](http://xavirema.eu/) <br />
@@ -124,20 +124,32 @@ We also provide the filtered/converted labels:
 
 
 ## Model Zoo
+***For TransCenter V2***:
+
 [PVTv2 pretrained](https://drive.google.com/drive/folders/1h4mvNhYbUqwH04Cd63JZOah4xo97U2H3?usp=sharing): pretrained model from deformable-DETR.
 
 [coco_pretrained](https://drive.google.com/file/d/11FAdJoXS3tPjRSzv4G-yEVa9ABiCmJGE/view?usp=sharing): model trained with coco person dataset.
 
 [MOT17_fromCoCo](https://drive.google.com/file/d/1hURJ9QSSWoX2NsE0rxfyJD3bfpwlAC3z/view?usp=sharing): model pretrained on coco person and fine-tuned on MOT17 trainset.
 
-[MOT17_trained_with_CH](https://drive.google.com/file/d/1f_zzZWK3QA0wNhHOiH04hasWWSBbs8gu/view?usp=sharing): model pretrained on CrowdHuman and fine-tuned on MOT17 trainset.
+[MOT17_trained_with_CH](https://drive.google.com/file/d/1f_zzZWK3QA0wNhHOiH04hasWWSBbs8gu/view?usp=sharing): model trained on CrowdHuman and MOT17 trainset.
 
 [MOT20_fromCoCo](https://drive.google.com/file/d/14WeLNNpWkNEyOIx6zrA4vuVxg4RrNkCh/view?usp=sharing): model pretrained on coco person and fine-tuned on MOT20 trainset.
 
-[MOT20_trained_with_CH](https://drive.google.com/file/d/1F65LpeMj7nkvjpoKcweMCymo9aP2Z9ag/view?usp=sharing): model pretrained on CrowdHuman and fine-tuned on MOT20 trainset.
+[MOT20_trained_with_CH](https://drive.google.com/file/d/1F65LpeMj7nkvjpoKcweMCymo9aP2Z9ag/view?usp=sharing): model trained on CrowdHuman and MOT20 trainset.
+
+
+***For TransCenter-Lite***:
+
+[coco_pretrained_lite](https://drive.google.com/file/d/1g5rHNee5jOKH14aAucnzZd4fLmMpuJG7/view?usp=sharing): model trained with coco person dataset.
+
+[MOT17_trained_with_CH_lite](https://drive.google.com/file/d/1HObK_SUntlD0lmO63T8K-9fLp7kstV6m/view?usp=sharing): model trained on CrowdHuman and MOT17 trainset.
+
+[MOT20_trained_with_CH_lite](https://drive.google.com/file/d/10IUHW_k8TKTcwSdR_3dWgevDQG6OJ2mL/view?usp=sharing): model trained on CrowdHuman and MOT20 trainset.
 
 Please put all the pretrained models to *./model_zoo* .
 ## Training
+***For TransCenter V2***:
 
 - Pretrained on coco person dataset:
 ```
@@ -175,6 +187,41 @@ cd TransCenter_official
 python -m torch.distributed.launch --nproc_per_node=2 --use_env ./training/main_mot20_mix_ch.py --output_dir=./outputs/CH_mot20 --batch_size=4 --num_workers=8 --data_dir=YourPathTo/MOT20/  --data_dir_ch=YourPathTo/crowd_human/ --epochs=150 --lr_drop=100 --nheads 1 2 5 8 --num_encoder_layers 3 4 6 3 --dim_feedforward_ratio 8 8 4 4 --d_model 64 128 320 512 --pre_hm --tracking --same_aug_pre --image_blur_aug --clip_max_norm=35
 ```
 
+***For TransCenter-Lite***:
+- Pretrained on coco person dataset:
+```
+cd TransCenter_official
+python -m torch.distributed.launch --nproc_per_node=4 --use_env ./training/main_coco_lite.py --output_dir=./outputs/whole_coco_lite --batch_size=4 --num_workers=8 --pre_hm --tracking --nheads 1 2 5 8 --num_encoder_layers 2 2 2 2 --dim_feedforward_ratio 8 8 4 4 --d_model 32 64 160 256 --num_decoder_layers 4 --data_dir=YourPathTo/cocodataset/
+```
+
+- Pretrained on CrowdHuman dataset:
+```
+cd TransCenter_official
+python -m torch.distributed.launch --nproc_per_node=4 --use_env ./training/main_crowdHuman_lite.py --output_dir=./outputs/whole_ch_from_coco_lite --batch_size=4 --num_workers=8 --resume=./model_zoo/coco_pretrained_lite.pth --pre_hm --tracking --nheads 1 2 5 8 --num_encoder_layers 2 2 2 2 --dim_feedforward_ratio 8 8 4 4 --d_model 32 64 160 256 --num_decoder_layers 4 --data_dir=YourPathTo/crowd_human/
+```
+- Train MOT17 from CoCo pretrained model:
+```
+cd TransCenter_official
+python -m torch.distributed.launch --nproc_per_node=2 --use_env ./training/main_mot17_lite.py --output_dir=./outputs/mot17_from_coco_lite --batch_size=4 --num_workers=8 --data_dir=YourPathTo/MOT17/ --epochs=50 --lr_drop=40 --nheads 1 2 5 8 --num_encoder_layers 2 2 2 2 --dim_feedforward_ratio 8 8 4 4 --d_model 32 64 160 256 --num_decoder_layers 4 --pre_hm --tracking --resume=./model_zoo/coco_pretrained_lite.pth --same_aug_pre --image_blur_aug --clip_max_norm=35
+```
+
+- Train MOT17 together with CrowdHuman:
+```
+cd TransCenter_official
+python -m torch.distributed.launch --nproc_per_node=2 --use_env ./training/main_mot17_mix_ch_lite.py --output_dir=./outputs/CH_mot17_lite --batch_size=4 --num_workers=8 --data_dir=YourPathTo/MOT17/  --data_dir_ch=YourPathTo/crowd_human/ --epochs=150 --lr_drop=100 --nheads 1 2 5 8 --num_encoder_layers 2 2 2 2 --dim_feedforward_ratio 8 8 4 4 --d_model 32 64 160 256 --num_decoder_layers 4 --pre_hm --tracking --same_aug_pre --image_blur_aug --clip_max_norm=35
+```
+- Train MOT20 from CoCo pretrained model:
+```
+cd TransCenter_official
+python -m torch.distributed.launch --nproc_per_node=2 --use_env ./training/main_mot20_lite.py --output_dir=./outputs/mot20_from_coco_lite --batch_size=4 --num_workers=8 --data_dir=YourPathTo/MOT20/ --epochs=50 --lr_drop=40 --nheads 1 2 5 8 --num_encoder_layers 2 2 2 2 --dim_feedforward_ratio 8 8 4 4 --d_model 32 64 160 256 --num_decoder_layers 4 --pre_hm --tracking --resume=./model_zoo/coco_pretrained_lite.pth --same_aug_pre --image_blur_aug --clip_max_norm=35
+```
+
+- Train MOT20 together with CrowdHuman:
+```
+cd TransCenter_official
+python -m torch.distributed.launch --nproc_per_node=2 --use_env ./training/main_mot20_mix_ch_lite.py --output_dir=./outputs/CH_mot20_lite --batch_size=4 --num_workers=8 --data_dir=YourPathTo/MOT20/  --data_dir_ch=YourPathTo/crowd_human/ --epochs=150 --lr_drop=100 --nheads 1 2 5 8 --num_encoder_layers 2 2 2 2 --dim_feedforward_ratio 8 8 4 4 --d_model 32 64 160 256 --num_decoder_layers 4 --pre_hm --tracking --same_aug_pre --image_blur_aug --clip_max_norm=35
+```
+
 Tips:
 1) If you encounter *RuntimeError: cuDNN error: CUDNN_STATUS_INTERNAL_ERROR* in some GPUs, please try to set *torch.backends.cudnn.benchmark=False*. In most of the cases, setting *torch.backends.cudnn.benchmark=True* is more memory-efficient.
 2) Depending on your environment and GPUs, you might experience MOTA jitter in your final models.
@@ -183,7 +230,9 @@ Tips:
 
 
 ## Tracking
-Using Private detections:
+###Using Private detections:
+
+***For TransCenter V2***:
 
 - MOT17:
 ```
@@ -195,8 +244,21 @@ python ./tracking/mot17_private_test.py --data_dir=YourPathTo/MOT17/
 cd TransCenter_official
 python ./tracking/mot20_private_test.py --data_dir=YourPathTo/MOT20/
 ```
+***For TransCenter-Lite***:
+- MOT17:
+```
+cd TransCenter_official
+python ./tracking/mot17_private_lite_test.py --data_dir=YourPathTo/MOT17/
+```
+- MOT20:
+```
+cd TransCenter_official
+python ./tracking/mot20_private_lite_test.py --data_dir=YourPathTo/MOT20/
+```
 
-Using Public detections:
+###Using Public detections:
+
+***For TransCenter V2***:
 
 - MOT17:
 ```
@@ -209,7 +271,21 @@ cd TransCenter_official
 python ./tracking/mot20_pub_test.py --data_dir=YourPathTo/MOT20/
 ```
 
+***For TransCenter-Lite***:
+- MOT17:
+```
+cd TransCenter_official
+python ./tracking/mot17_pub_lite_test.py --data_dir=YourPathTo/MOT17/
+```
+- MOT20:
+```
+cd TransCenter_official
+python ./tracking/mot20_pub_lite_test.py --data_dir=YourPathTo/MOT20/
+```
+
 ## MOTChallenge Results
+***For TransCenter V2***:
+
 MOT17 public detections:
      
 | Pretrained| MOTA     | MOTP     | IDF1 |  FP    | FN    | IDS |
@@ -246,7 +322,7 @@ MOT20 private detections:
 
 ## Acknowledgement
 
-The code for TransCenter V2 is modified and network pre-trained weights are obtained from the following repositories:
+The code for TransCenterV2, TransCenter-Lite is modified and network pre-trained weights are obtained from the following repositories:
 
 1) The PVTv2 backbone pretrained models from PVTv2.
 2) The data format conversion code is modified from CenterTrack.
